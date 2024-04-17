@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -12,6 +13,15 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      },
+      colors: {
+        'dark-blue': '#004283',
+        'nav-blue': '#014B8B',
+        'dark-select-blue': '#003366',
+        'light-blue': '#0096D5',
+        'light-gray': '#D9D9D9',
+        orange: '#FF5C2C',
+        'select-orange': '#EA400D',
       },
     },
   },
