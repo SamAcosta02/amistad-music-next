@@ -14,7 +14,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex items-center justify-between flex-wrap bg-nav-blue p-4 sticky z-50 top-0 w-screen">
+    <nav className="flex items-center justify-evenly flex-wrap bg-nav-blue p-4 sticky z-50 top-0 w-screen">
       <div className="flex items-center w-[] flex-shrink-0 text-white mr-6">
         <div className="flex flex-row items-center">
           <Link href="/home">
@@ -30,8 +30,15 @@ export default function Navbar() {
         </div>
       </div>
       <div className="hidden lg:flex lg:flex-row lg:items-center lg:px-4 lg:gap-4 lg:text-md text-white">
-        <p>Tutoriales</p>
-        <p>Acerca</p>
+        <Link href="/home">
+          Tutoriales
+        </Link>
+        <Link href="/home">
+          Acerca
+        </Link>
+        <Link href="/home/add">
+          Agregar
+        </Link>
       </div>
       <div className="block lg:hidden">
         <button
@@ -65,27 +72,40 @@ export default function Navbar() {
         transition={{ type: 'spring', stiffness: 250, damping: 30 }}
       >
         <div className="w-64 fixed right-0 top-0 h-full bg-light-blue shadow z-50">
-          <div className="p-4 text-white">
-            <div className="flex justify-end">
+          <div className="text-white">
+            <div className="flex justify-end p-4">
               <button type="button" onClick={() => setIsOpen(false)}>X</button>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 pl-4">
               <Image
-                className="w-10 rounded-full"
+                className="w-12 rounded-full"
                 src="/propic.jpg"
                 alt="User profile picture"
                 width={500}
                 height={500}
               />
               <div>
-                <p className="font-bold">Hola, Samuel</p>
-                <p className="text-xs">Bajista</p>
+                <p className="font-bold text-xl">Hola, Samuel</p>
+                <p className="text-sm">Bajista</p>
               </div>
             </div>
             <br />
-            <ul>
-              <li className="pb-1">Tutoriales</li>
-              <li>Acerca</li>
+            <ul className="m-2 flex flex-col gap-2 text-lg">
+              <li className="bg-select-blue p-2">
+                <Link href="/home">
+                  Tutoriales
+                </Link>
+              </li>
+              <li className="bg-select-blue p-2">
+                <Link href="/home">
+                  Acerca
+                </Link>
+              </li>
+              <li className="bg-select-blue p-2">
+                <Link href="/home/add">
+                  Agregar
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

@@ -31,7 +31,8 @@ export const MAJOR_SCALES: { [key: string]: string[] } = {
 export const NOTE_STYLE: string[] = [
   'Notas',
   'Grados',
-  'Ambas',
+  'Grados Primero',
+  'Notas Primero',
 ];
 
 export default MAJOR_KEYS;

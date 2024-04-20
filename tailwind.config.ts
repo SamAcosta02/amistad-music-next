@@ -22,6 +22,7 @@ const config: Config = {
         'light-gray': '#D9D9D9',
         orange: '#FF5C2C',
         'select-orange': '#EA400D',
+        'select-blue': '#008ECA',
       },
     },
   },
