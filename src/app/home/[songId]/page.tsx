@@ -1,19 +1,24 @@
 'use client';
 
 /* eslint-disable react/no-array-index-key */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import styles from '@/components/home/home.module.css';
 import MAJOR_KEYS, { NOTE_STYLE, MAJOR_SCALES } from '@/consts/consts';
-import { santoSong } from '@/utils/mock';
+import {
+  santoSong,
+  merariSong,
+  aquiSong,
+} from '@/utils/mock';
 import { Version } from '@/utils/types';
 import getNoteFromNumber, { generateLyrics } from '@/utils/helpers';
 
 export default function Song({ params }: { params: { songId: string } }) {
   const [defKey, setDefKey] = useState<string>('C');
   const [cypher, setCypher] = useState<string>('Notas');
-  const [version, setVersion] = useState<Version>(santoSong.versions[0]);
   const [focus, setFocus] = useState<boolean>(true);
+  const [song, setSong] = useState(santoSong);
+  const [version, setVersion] = useState<Version>(santoSong.versions[0]);
 
   const changeCypher = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setCypher(event.target.value);
@@ -21,7 +26,7 @@ export default function Song({ params }: { params: { songId: string } }) {
 
   const changeVersion = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const change = event.target.value as unknown as number;
-    setVersion(santoSong.versions[change]);
+    setVersion(song.versions[change]);
   };
 
   const transpose = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -32,33 +37,45 @@ export default function Song({ params }: { params: { songId: string } }) {
     setFocus(!focus);
   };
 
+  useEffect(() => {
+    if (params.songId === '1') {
+      setSong(santoSong);
+    } else if (params.songId === '2') {
+      setSong(aquiSong);
+      setVersion(aquiSong.versions[0]);
+    } else {
+      setSong(merariSong);
+      setVersion(merariSong.versions[0]);
+    }
+  }, [params]);
+
   return (
     <div>
       <section id="song-info" className="bg-light-gray md:flex md:flex-row md:justify-center">
         <div className="flex flex-row gap-2 items-center justify-center p-4">
           <Image
             className={`w-32 object-cover ${styles.someshadow} md:size-[20vh] md:max-w-[250px] md:max-h-[250px]`}
-            src={santoSong.src}
+            src={song.src}
             alt="Imagen de Album"
             width={500}
             height={500}
           />
           <div>
             <div className="flex flex-col">
-              <h1 className="text-lg md:text-2xl font-bold text-orange pb-1">{`${santoSong.name} ${params.songId}`}</h1>
-              <h2 className="relative bottom-2 font-extrabold">{santoSong.author}</h2>
+              <h1 className="text-lg md:text-2xl font-bold text-orange pb-1">{`${song.name} ${params.songId}`}</h1>
+              <h2 className="relative bottom-2 font-extrabold">{song.author}</h2>
             </div>
             <p>
               <span className="font-semibold">Tono: </span>
-              {santoSong.keys[0]}
+              {song.keys[0]}
             </p>
             <p>
               <span className="font-semibold text-light-blue">BPM: </span>
-              {santoSong.bpm}
+              {song.bpm}
             </p>
             <p>
               <span className="font-semibold">Compas: </span>
-              {santoSong.signature}
+              {song.signature}
             </p>
             {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
             <button
@@ -74,7 +91,7 @@ export default function Song({ params }: { params: { songId: string } }) {
         <div className="md:flex items-center justify-center hidden">
           <iframe
             className="p-4 rounded-xl h-full"
-            src={santoSong.reference}
+            src={song.reference}
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerPolicy="strict-origin-when-cross-origin"
@@ -91,7 +108,7 @@ export default function Song({ params }: { params: { songId: string } }) {
             <label htmlFor="version" className="flex flex-row gap-2">
               <p className="font-bold">Version:</p>
               <select id="version" name="version" className="bg-light-gray rounded-md p-1" onChange={changeVersion}>
-                {santoSong.versions.map((ver:Version, index:number) => (
+                {song.versions.map((ver:Version, index:number) => (
                   <option value={index} key={index}>{ver.title}</option>
                 ))}
               </select>
