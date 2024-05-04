@@ -1,12 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [rendered, setRendered] = useState(false);
+
+  useEffect(() => {
+    setRendered(true);
+  }, [rendered]);
+
+  const handleHide = () => {
+    setIsOpen(!isOpen);
+  };
 
   const variants = {
     open: { x: 0 },
@@ -66,7 +75,7 @@ export default function Navbar() {
         </button>
       </div>
       <motion.div
-        className="w-64 fixed right-0 top-0 h-full bg-light-blue shadow z-50 lg:hidden"
+        className={`w-64 fixed right-0 top-0 h-full bg-light-blue shadow z-50 lg:hidden ${rendered ? 'block' : 'hidden'}`}
         animate={isOpen ? 'open' : 'closed'}
         variants={variants}
         transition={{ type: 'spring', stiffness: 250, damping: 30 }}
@@ -92,19 +101,25 @@ export default function Navbar() {
             <br />
             <ul className="m-2 flex flex-col gap-2 text-lg">
               <li className="bg-select-blue p-2">
-                <Link href="/home">
-                  Tutoriales
-                </Link>
+                <button type="button" onClick={handleHide}>
+                  <Link href="/home">
+                    Tutoriales
+                  </Link>
+                </button>
               </li>
               <li className="bg-select-blue p-2">
-                <Link href="/home">
-                  Acerca
-                </Link>
+                <button type="button" onClick={handleHide}>
+                  <Link href="/home">
+                    Acerca
+                  </Link>
+                </button>
               </li>
               <li className="bg-select-blue p-2">
-                <Link href="/home/add">
-                  Agregar
-                </Link>
+                <button type="button" onClick={handleHide}>
+                  <Link href="/home/add">
+                    Agregar
+                  </Link>
+                </button>
               </li>
             </ul>
           </div>
