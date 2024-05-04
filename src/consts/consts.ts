@@ -35,4 +35,17 @@ export const NOTE_STYLE: string[] = [
   'Notas Primero',
 ];
 
+export const GENERAL_OPTIONS: string[][] = [
+  ['Tutoriales', '/home/tutorial'],
+  ['Acerca', '/home/about'],
+];
+
+export const LEADER_OPTIONS: string[][] = [
+  ['Agregar Canción', '/home/add'],
+  ['Crear Set: Domingo', '/home/set/sunday'],
+  ['Crear Set: Miércoles', '/home/set/wednesday'],
+  ['Crear Set: Viernes', '/home/set/friday'],
+  ['Crear Set: Evento', '/home/set/event'],
+];
+
 export default MAJOR_KEYS;

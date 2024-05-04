@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import { LEADER_OPTIONS, GENERAL_OPTIONS } from '@/consts/consts';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -120,27 +121,32 @@ export default function Navbar() {
             </div>
             <br />
             <ul className="m-2 flex flex-col gap-2 text-lg">
-              <li className="bg-select-blue p-2">
-                <button type="button" onClick={handleHide}>
-                  <Link href="/home">
-                    Tutoriales
-                  </Link>
-                </button>
+              <li className="flex items-center">
+                <p className="w-[30%] font-bold">General</p>
+                <div className="h-[1px] bg-white w-[70%]" />
               </li>
-              <li className="bg-select-blue p-2">
-                <button type="button" onClick={handleHide}>
-                  <Link href="/home">
-                    Acerca
-                  </Link>
-                </button>
+              {GENERAL_OPTIONS.map((option) => (
+                <li className="bg-select-blue p-2" key={option[0]}>
+                  <button type="button" onClick={handleHide}>
+                    <Link href={option[1]}>
+                      {option[0]}
+                    </Link>
+                  </button>
+                </li>
+              ))}
+              <li className="flex items-center pt-4">
+                <p className="w-[20%] font-bold">Lider</p>
+                <div className="h-[1px] bg-white w-[80%]" />
               </li>
-              <li className="bg-select-blue p-2">
-                <button type="button" onClick={handleHide}>
-                  <Link href="/home/add">
-                    Agregar
-                  </Link>
-                </button>
-              </li>
+              {LEADER_OPTIONS.map((option) => (
+                <li className="bg-select-blue p-2" key={option[0]}>
+                  <button type="button" onClick={handleHide}>
+                    <Link href={option[1]}>
+                      {option[0]}
+                    </Link>
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
