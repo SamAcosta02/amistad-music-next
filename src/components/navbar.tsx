@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -20,6 +20,11 @@ export default function Navbar() {
   const variants = {
     open: { x: 0 },
     closed: { x: '100%' },
+  };
+
+  const buttonVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
   };
 
   return (
@@ -74,6 +79,21 @@ export default function Navbar() {
           </svg>
         </button>
       </div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.button
+            className="absolute bg-focus-black w-[100vw] h-[100vh] z-49 top-0 lg:hidden"
+            initial="hidden"
+            animate={isOpen ? 'visible' : 'hidden'}
+            exit="hidden"
+            variants={buttonVariants}
+            type="button"
+            onClick={handleHide}
+          >
+            .
+          </motion.button>
+        )}
+      </AnimatePresence>
       <motion.div
         className={`w-64 fixed right-0 top-0 h-full bg-light-blue shadow z-50 lg:hidden ${rendered ? 'block' : 'hidden'}`}
         animate={isOpen ? 'open' : 'closed'}

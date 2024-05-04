@@ -23,6 +23,7 @@ const config: Config = {
         orange: '#FF5C2C',
         'select-orange': '#EA400D',
         'select-blue': '#008ECA',
+        'focus-black': 'rgba(0, 0, 0, 0.5)',
       },
     },
   },
