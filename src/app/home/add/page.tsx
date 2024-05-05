@@ -1,64 +1,70 @@
-'use client';
-
 /* eslint-disable react/no-array-index-key */
 
-import React, { useEffect, useState } from 'react';
-import MAJOR_KEYS, { MAJOR_SCALES } from '@/consts/consts';
-import { HeaderDictionary } from '@/utils/types';
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { Song } from '@/utils/types';
 import getNoteFromNumber from '@/utils/helpers';
-import Modal from '@/components/modal';
+import MAJOR_KEYS, { MAJOR_SCALES } from '@/consts/consts';
 
 export default function Add() {
-  const [song, setSong] = useState({
+  const [song, setSong] = useState<Song>({
     id: '',
     name: '',
-    keys: [],
-    bpm: '',
+    keys: ['C'],
+    bpm: 70,
     signature: '',
     src: '',
     reference: '',
     author: '',
-    versions: [],
+    versions: [
+      {
+        title: 'Titulo',
+        content: [
+          [101],
+          [0, 9, 0],
+        ],
+        contentHeaders: { 101: ['Intro', 'Letra de inicio'] },
+        lyrics: [['#Intro'], ['Letra de inicio']],
+      },
+    ],
   });
-  const [focus, setFocus] = useState<boolean>(true);
-  const [preview, setPreview] = useState<boolean>(true);
-  const [sections, setSections] = useState<string[]>(['Intro']);
-  const [defKey, setDefKey] = useState<string[]>(MAJOR_SCALES.C);
-  const [chords, setChords] = useState<number[][]>([[101], [0, 9, 0]]);
-  const [numSec, setNumSec] = useState<number>(102);
-  const [headers, setHeaders] = useState<HeaderDictionary>({ 101: ['Intro', 'Letra'] });
-  const [open, setOpen] = useState<boolean>(false);
-
-  const changeFocus = () => {
-    setFocus(!focus);
-  };
-
-  const changePreview = () => {
-    setPreview(!preview);
-  };
-
-  const addSection = () => {
-    setSections([...sections, 'Intro']);
-    setNumSec(numSec + 1);
-    setChords([...chords, [numSec], [0, 9, 0]]);
-    setHeaders({ ...headers, [numSec]: ['Another', 'More of other'] });
-  };
+  // const [preview, setPreview] = useState<boolean>(true);
+  const preview = true;
 
   const changeNotes = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setDefKey(MAJOR_SCALES[event.target.value]);
+    setSong({ ...song, keys: [event.target.value] });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSong({ ...song, [e.target.name]: e.target.value });
+  };
+
+  const handleChangeAuthor = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSong({ ...song, [e.target.name]: e.target.value });
+  };
+
+  const handleChangeVideo = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = e.target.value;
+    const id = url.split('?v=')[1];
+    const embedLink = `https://www.youtube.com/embed/${id}`;
+    setSong({ ...song, [e.target.name]: embedLink });
+  };
+
+  const handleChangeBPM = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSong({ ...song, [e.target.name]: e.target.value });
+  };
+
+  const handleChangeSignature = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSong({ ...song, [e.target.name]: e.target.value });
   };
 
   useEffect(() => {
-    console.log(chords);
-  }, [chords]);
+    console.log(song);
+  }, [song]);
 
   return (
     <div className="flex flex-col items-center">
-      <h1 className="text-3xl font-bold text-orange p-4">Agregar Canción</h1>
       <form>
         <section
           id="general-data"
@@ -80,7 +86,7 @@ export default function Add() {
               type="text"
               name="name"
               value={song.name}
-              onChange={handleChange}
+              onChange={handleChangeName}
             />
           </label>
           <label
@@ -92,9 +98,9 @@ export default function Add() {
               className="p-1 pl-2 rounded-lg w-[90%]"
               placeholder="David Alfano"
               type="text"
-              name="name"
-              value={song.name}
-              onChange={handleChange}
+              name="author"
+              value={song.author}
+              onChange={handleChangeAuthor}
             />
           </label>
           <label
@@ -119,9 +125,9 @@ export default function Add() {
               className="p-1 pl-2 rounded-lg w-full"
               placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
               type="text"
-              name="keys"
-              value={song.name}
-              onChange={handleChange}
+              name="reference"
+              value={song.reference}
+              onChange={handleChangeVideo}
             />
           </label>
           <div className="flex w-full items-center gap-2">
@@ -133,10 +139,10 @@ export default function Add() {
               <input
                 className="p-1 pl-2 rounded-lg w-full"
                 placeholder="70"
-                type="text"
-                name="keys"
-                value={song.name}
-                onChange={handleChange}
+                type="number"
+                name="bpm"
+                value={song.bpm}
+                onChange={handleChangeBPM}
               />
             </label>
             <label
@@ -148,127 +154,58 @@ export default function Add() {
                 className="p-1 pl-2 rounded-lg w-full"
                 placeholder="4/4"
                 type="text"
-                name="keys"
-                value={song.name}
-                onChange={handleChange}
+                name="signature"
+                value={song.signature}
+                onChange={handleChangeSignature}
               />
             </label>
           </div>
         </section>
 
-        <div className="flex justify-center p-4">
-          <button
-            id="option"
-            type="button"
-            className="bg-nav-blue text-white rounded-lg p-1"
-            onClick={changeFocus}
-          >
-            {focus ? 'Acordes' : 'Letra'}
-          </button>
-          <button
-            id="prev"
-            type="button"
-            className="bg-orange text-white rounded-lg p-1"
-            onClick={changePreview}
-          >
-            {preview ? 'Esconder vista previa' : 'Mostrar vista previa'}
-          </button>
-        </div>
-
-        <section className="flex justify-center">
-          {focus && (
-            <div className="flex flex-col gap-2 justify-center w-[80vw]">
-              {Object.entries(headers).map(([key, value]) => (
-                <div key={key} className="flex flex-row justify-between">
-                  <div className="flex flex-row gap-2 items-end lg:pt-2">
-                    <h2 className="text-2xl lg:text-3xl font-semibold text-orange">{value[0]}</h2>
-                    <p className="lg:text-lg italic">{value[1]}</p>
-                  </div>
-                  <button
-                    className="bg-light-gray rounded-lg p-1 text-gray-500"
-                    type="button"
-                    onClick={() => setOpen(true)}
-                  >
-                    Editar
-                  </button>
-                  <Modal
-                    open={open}
-                    onClose={() => setOpen(false)}
-                  >
-                    <label htmlFor="edit-title">
-                      <p>Title:</p>
-                      <input
-                        id="edit"
-                        placeholder={value[0]}
-                      />
-                    </label>
-                    <label htmlFor="edit-sub">
-                      <p>Subtitle:</p>
-                      <input
-                        id="edit"
-                        placeholder={value[1]}
-                      />
-                    </label>
-                  </Modal>
-                </div>
-              ))}
-              <button
-                className="bg-light-gray rounded-lg p-2 text-gray-500"
-                type="button"
-                onClick={addSection}
-              >
-                Agregar Seccion +
-              </button>
+        <section>
+          {Object.entries(song.versions[0].contentHeaders).map(([key, value]) => (
+            <div key={key} className="flex gap-2 items-center">
+              <p className="text-2xl lg:text-3xl font-semibold text-orange">{value[0]}</p>
+              <p>{value[1]}</p>
             </div>
-          )}
-
-          {!focus && (
-            <div className="flex flex-col gap-2 justify-center w-[80vw]">
-              <div>
-                <h3 className="text-2xl font-bold text-orange">Intro</h3>
-                <div className="bg-light-gray rounded-lg p-2">
-                  <p>Something</p>
-                </div>
-              </div>
-              <button
-                className="bg-light-gray rounded-lg p-2 text-gray-500"
-                type="button"
-              >
-                Agregar Seccion +
-              </button>
-            </div>
-          )}
-        </section>
-
-        <section className="flex justify-center w-[80vw]">
-          {preview && (
-            <div className="flex flex-col w-full pt-4">
-              <h2 className="text-3xl font-bold text-orange">Vista Previa</h2>
-              <div id="content" className="pb-8 w-full">
-                <div className="bg-light-gray w-full rounded-lg p-2 max-w-[780px]">
-                  {chords.map((row, i) => {
-                    if (row.length === 1) {
-                      return (
-                        <div key={i} className="flex flex-row gap-2 items-end lg:pt-2">
-                          <h2 className="text-2xl lg:text-3xl font-semibold text-orange">{headers[row[0]][0]}</h2>
-                          <p className="lg:text-lg italic">{headers[row[0]][1]}</p>
-                        </div>
-                      );
-                    }
-                    return (
-                      <div key={i} className="flex gap-1 font-bold">
-                        {row.map((num, j) => (
-                          <div className="text-lg" key={j}>{getNoteFromNumber(num, defKey, 'Notas')}</div>
-                        ))}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          )}
+          ))}
         </section>
       </form>
+
+      <section className="flex justify-center w-[80vw]">
+        {preview && (
+        <div className="flex flex-col w-full pt-4">
+          <h2 className="text-3xl font-bold text-orange">Vista Previa</h2>
+          <div id="content" className="pb-8 w-full">
+            <div className="bg-light-gray w-full rounded-lg p-2 max-w-[780px]">
+              {song.versions[0].content.map((row, i) => {
+                if (row.length === 1) {
+                  return (
+                    <div key={i} className="flex flex-row gap-2 items-end lg:pt-2">
+                      <h2 className="text-2xl lg:text-3xl font-semibold text-orange">
+                        {song.versions[0].contentHeaders[row[0]][0]}
+                      </h2>
+                      <p className="lg:text-lg italic">
+                        {song.versions[0].contentHeaders[row[0]][1]}
+                      </p>
+                    </div>
+                  );
+                }
+                return (
+                  <div key={i} className="flex gap-1 font-bold">
+                    {row.map((num, j) => (
+                      <div className="text-lg" key={j}>
+                        {getNoteFromNumber(num, MAJOR_SCALES[song.keys[0]], 'Notas')}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+        )}
+      </section>
     </div>
   );
 }
