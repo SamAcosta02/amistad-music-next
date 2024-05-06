@@ -30,6 +30,7 @@ export default function Add() {
     ],
   });
   // const [preview, setPreview] = useState<boolean>(true);
+  const [section, setSection] = useState<number>(101);
   const preview = true;
 
   const changeNotes = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -59,12 +60,18 @@ export default function Add() {
     setSong({ ...song, [e.target.name]: e.target.value });
   };
 
+  const addSection = () => {
+    song.versions[0].contentHeaders[section + 1] = ['Seccion', 'Letra de la seccion'];
+    song.versions[0].content.push([section + 1], [0, 9, 0]);
+    setSection(section + 1);
+  };
+
   useEffect(() => {
     console.log(song);
   }, [song]);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center pt-4">
       <form>
         <section
           id="general-data"
@@ -162,14 +169,53 @@ export default function Add() {
           </div>
         </section>
 
-        <section>
-          {Object.entries(song.versions[0].contentHeaders).map(([key, value]) => (
-            <div key={key} className="flex gap-2 items-center">
-              <p className="text-2xl lg:text-3xl font-semibold text-orange">{value[0]}</p>
-              <p>{value[1]}</p>
-            </div>
-          ))}
+        <section className="border p-2 mt-4 rounded-lg">
+          {song.versions[0].content.map((row, i) => {
+            if (row.length === 1) {
+              return (
+                <div key={i} className="flex flex-row gap-2 justify-between items-center p-2 bg-gray-100">
+                  <div className="flex flex-row gap-2 items-center">
+                    <h2 className="text-2xl lg:text-3xl font-semibold text-orange">
+                      {song.versions[0].contentHeaders[row[0]][0]}
+                    </h2>
+                    <p className="lg:text-lg italic">
+                      {song.versions[0].contentHeaders[row[0]][1]}
+                    </p>
+                  </div>
+                  <button
+                    className="bg-orange text-white p-1 rounded-lg"
+                    type="button"
+                  >
+                    Editar
+                  </button>
+                </div>
+              );
+            }
+            return (
+              <div key={i} className="flex gap-1 font-bold justify-center">
+                {row.map((num, j) => (
+                  <div className="text-lg" key={j}>
+                    {/* {getNoteFromNumber(num, MAJOR_SCALES[song.keys[0]], 'Notas')} */}
+                    <label htmlFor={`${j}sec`}>
+                      <select>
+                        <option>
+                          {getNoteFromNumber(num, MAJOR_SCALES[song.keys[0]], 'Notas')}
+                        </option>
+                      </select>
+                    </label>
+                  </div>
+                ))}
+              </div>
+            );
+          })}
         </section>
+        <button
+          className="bg-orange text-white p-1 rounded-lg w-full mt-4"
+          type="button"
+          onClick={addSection}
+        >
+          Agregar Seccion +
+        </button>
       </form>
 
       <section className="flex justify-center w-[80vw]">
