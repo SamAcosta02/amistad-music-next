@@ -2,7 +2,7 @@
 
 /* eslint-disable react/no-array-index-key */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import MAJOR_KEYS, { MAJOR_SCALES } from '@/consts/consts';
 import { HeaderDictionary } from '@/utils/types';
 import getNoteFromNumber from '@/utils/helpers';
@@ -51,10 +51,6 @@ export default function Add() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSong({ ...song, [e.target.name]: e.target.value });
   };
-
-  useEffect(() => {
-    console.log(chords);
-  }, [chords]);
 
   return (
     <div className="flex flex-col items-center">
