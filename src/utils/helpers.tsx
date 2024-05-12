@@ -20,6 +20,46 @@ const romanDictionary: {[key: string]: string} = {
   '-7': 'vii',
 };
 
+export function getNoteFromNumberNoStyle(
+  num: number,
+  scale: string[],
+): string {
+  // If it is a minor chord
+  if (num < 0) {
+    // For negative numbers, get the corresponding minor note
+    const note = scale[Math.abs(num) - 1];
+    return `${note}m`;
+  }
+
+  // if it is a note with an added bass
+  if (num >= 10 && num < 100) {
+    // For numbers 10 and above, split into two notes
+    const digits = Array.from(String(num), Number);
+    const result = digits.map((digit) => scale[digit - 1]).join('/');
+    return result;
+  }
+
+  // return symbols (independant of style)
+  if (num === 8) {
+    return '/';
+  }
+  if (num === 9) {
+    return '-';
+  }
+  if (num === 0) {
+    return '|';
+  }
+  if (num === 200) {
+    return 'x';
+  }
+  if (num > 200) {
+    return `${num - 200}`;
+  }
+
+  // For single digit numbers, get the corresponding note
+  return `${scale[num - 1]}`;
+}
+
 export default function getNoteFromNumber(
   num: number,
   scale: string[],

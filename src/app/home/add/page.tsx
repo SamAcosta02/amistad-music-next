@@ -4,8 +4,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Song } from '@/utils/types';
-import getNoteFromNumber from '@/utils/helpers';
+import getNoteFromNumber, { getNoteFromNumberNoStyle } from '@/utils/helpers';
 import MAJOR_KEYS, { MAJOR_SCALES } from '@/consts/consts';
+import ModalTituloSubtitulo from '@/components/modals/modal-title-sub';
 
 export default function Add() {
   const [song, setSong] = useState<Song>({
@@ -31,6 +32,7 @@ export default function Add() {
   });
   // const [preview, setPreview] = useState<boolean>(true);
   const [section, setSection] = useState<number>(101);
+  const [openTitle, setOpenTitle] = useState<boolean>(false);
   const preview = true;
 
   const changeNotes = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -66,9 +68,25 @@ export default function Add() {
     setSection(section + 1);
   };
 
+  const handleIndChange = (i:number, j:number) => (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSongContent = [...song.versions[0].content];
+    newSongContent[i][j] = parseInt(e.target.value, 10);
+    setSong({ ...song, versions: [{ ...song.versions[0], content: newSongContent }] });
+  };
+
+  const addNote = (index:number) => {
+    const newSong = { ...song };
+    const end = newSong.versions[0].content[index].length - 1;
+    newSong.versions[0].content[index][end] = 9;
+    newSong.versions[0].content[index].push(0);
+    setSong(newSong);
+  };
+
   useEffect(() => {
     console.log(song);
   }, [song]);
+
+  const silly = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   return (
     <div className="flex flex-col items-center pt-4">
@@ -178,11 +196,21 @@ export default function Add() {
                     <h2 className="text-2xl lg:text-3xl font-semibold text-orange">
                       {song.versions[0].contentHeaders[row[0]][0]}
                     </h2>
+                    <ModalTituloSubtitulo
+                      open={openTitle}
+                      onClose={() => setOpenTitle(false)}
+                      onAccept={setSong}
+                      song={song}
+                      row={row}
+                    >
+                      <h1>Editar Titulo/Subtitulo</h1>
+                    </ModalTituloSubtitulo>
                     <p className="lg:text-lg italic">
                       {song.versions[0].contentHeaders[row[0]][1]}
                     </p>
                   </div>
                   <button
+                    onClick={() => setOpenTitle(true)}
                     className="bg-orange text-white p-1 rounded-lg"
                     type="button"
                   >
@@ -192,19 +220,61 @@ export default function Add() {
               );
             }
             return (
-              <div key={i} className="flex gap-1 font-bold justify-center">
-                {row.map((num, j) => (
-                  <div className="text-lg" key={j}>
-                    {/* {getNoteFromNumber(num, MAJOR_SCALES[song.keys[0]], 'Notas')} */}
-                    <label htmlFor={`${j}sec`}>
-                      <select>
-                        <option>
-                          {getNoteFromNumber(num, MAJOR_SCALES[song.keys[0]], 'Notas')}
-                        </option>
-                      </select>
-                    </label>
-                  </div>
-                ))}
+              <div key={i} className="flex flex-col gap-2">
+                <div className="flex gap-1 font-bold justify-center items-center">
+                  {row.map((num, j) => {
+                    if (num !== 0) {
+                      return (
+                        <div className="text-sm pt-1" key={j}>
+                          <label htmlFor={`${j}sec`}>
+                            <select
+                              className="bg-light-gray p-[5px] rounded-lg w-13 text-center"
+                              value={num}
+                              onChange={handleIndChange(i, j)}
+                              data-i={i}
+                              data-j={j}
+                              disabled={num === 0}
+                            >
+                              {silly.map((symbol) => (
+                                <option value={symbol} key={symbol} disabled={symbol === 0}>
+                                  {getNoteFromNumberNoStyle(symbol, MAJOR_SCALES[song.keys[0]])}
+                                </option>
+                              ))}
+                            </select>
+                            <button
+                              className="bg-red-500 text-white p-1 rounded-lg"
+                              type="button"
+                            >
+                              -
+                            </button>
+                          </label>
+                        </div>
+                      );
+                    }
+                    return <div className="text-sm" key={j}> | </div>;
+                  })}
+                </div>
+                <div className="flex flex-col gap-2 justify-center">
+                  <button
+                    className="bg-gray-100 text-black p-1 rounded-lg"
+                    type="button"
+                    onClick={() => addNote(i)}
+                  >
+                    Agregar Nota/Simbolo
+                  </button>
+                  <button
+                    className="bg-gray-200 text-black p-1 rounded-lg"
+                    type="button"
+                  >
+                    Agregar Espacio
+                  </button>
+                  <button
+                    className="bg-gray-300 text-black p-1 rounded-lg mb-4"
+                    type="button"
+                  >
+                    Agregar Compas
+                  </button>
+                </div>
               </div>
             );
           })}
