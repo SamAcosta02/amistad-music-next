@@ -32,7 +32,7 @@ export default function Add() {
   });
   // const [preview, setPreview] = useState<boolean>(true);
   const [section, setSection] = useState<number>(101);
-  const [openTitle, setOpenTitle] = useState<boolean>(false);
+  const [openTitle, setOpenTitle] = useState<boolean[]>([false]);
   const preview = true;
 
   const changeNotes = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -66,6 +66,7 @@ export default function Add() {
     song.versions[0].contentHeaders[section + 1] = ['Seccion', 'Letra de la seccion'];
     song.versions[0].content.push([section + 1], [0, 9, 0]);
     setSection(section + 1);
+    setOpenTitle([...openTitle, false]);
   };
 
   const handleIndChange = (i:number, j:number) => (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -197,8 +198,12 @@ export default function Add() {
                       {song.versions[0].contentHeaders[row[0]][0]}
                     </h2>
                     <ModalTituloSubtitulo
-                      open={openTitle}
-                      onClose={() => setOpenTitle(false)}
+                      open={openTitle[i]}
+                      onClose={() => {
+                        const newOpenTitle = [...openTitle];
+                        newOpenTitle[i] = false;
+                        setOpenTitle(newOpenTitle);
+                      }}
                       onAccept={setSong}
                       song={song}
                       row={row}
@@ -210,7 +215,11 @@ export default function Add() {
                     </p>
                   </div>
                   <button
-                    onClick={() => setOpenTitle(true)}
+                    onClick={() => {
+                      const newOpenTitle = [...openTitle];
+                      newOpenTitle[i] = true;
+                      setOpenTitle(newOpenTitle);
+                    }}
                     className="bg-orange text-white p-1 rounded-lg"
                     type="button"
                   >
