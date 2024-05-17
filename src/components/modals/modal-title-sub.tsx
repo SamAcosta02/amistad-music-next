@@ -57,13 +57,15 @@ export default function ModalTituloSubtitulo({
           ${open ? 'scale-100 opacity-100' : 'scale-125 opacity-0'}`
         }
       >
-        {children}
+        <div className="flex justify-center pb-3 text-xl font-semibold text-orange">
+          {children}
+        </div>
         <div>
           <label
             htmlFor="Name"
             className="flex flex-row items-center gap-1 w-full"
           >
-            <p>Nombre:</p>
+            <p>Titulo:</p>
             <input
               className="p-1 pl-2 rounded-lg w-[90%]"
               placeholder="Tengo Sed"
@@ -77,7 +79,7 @@ export default function ModalTituloSubtitulo({
             htmlFor="Name"
             className="flex flex-row items-center gap-1 w-full"
           >
-            <p>Nombre:</p>
+            <p>Subtitulo:</p>
             <input
               className="p-1 pl-2 rounded-lg w-[90%]"
               placeholder="Tengo Sed"

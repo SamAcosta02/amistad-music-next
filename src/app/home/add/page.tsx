@@ -83,6 +83,18 @@ export default function Add() {
     setSong(newSong);
   };
 
+  const addSpace = (index:number) => {
+    const newSong = { ...song };
+    newSong.versions[0].content.splice(index + 1, 0, [0, 9, 0]);
+    setSong(newSong);
+  };
+
+  const addMeasure = (index:number) => {
+    const newSong = { ...song };
+    newSong.versions[0].content[index].push(9, 0);
+    setSong(newSong);
+  };
+
   useEffect(() => {
     console.log(song);
   }, [song]);
@@ -188,8 +200,9 @@ export default function Add() {
           </div>
         </section>
 
-        <section className="border p-2 mt-4 rounded-lg">
+        <section className="border p-2 mt-4 rounded-lg max-w-[80vw]">
           {song.versions[0].content.map((row, i) => {
+            let count = 0;
             if (row.length === 1) {
               return (
                 <div key={i} className="flex flex-row gap-2 justify-between items-center p-2 bg-gray-100">
@@ -230,8 +243,47 @@ export default function Add() {
             }
             return (
               <div key={i} className="flex flex-col gap-2">
-                <div className="flex gap-1 font-bold justify-center items-center">
+                <div className="flex flex-wrap gap-1 font-bold justify-center items-center">
                   {row.map((num, j) => {
+                    if (num === 0) count += 1;
+                    if (count === 2 && num !== 0) {
+                      count = 1;
+                      return (
+                        <div key={j}>
+                          <div className="text-sm pt-1">
+                            <label htmlFor={`${j}sec`}>
+                              <select
+                                className="bg-light-gray p-[5px] rounded-lg w-13 text-center"
+                                value={num}
+                                onChange={handleIndChange(i, j)}
+                                data-i={i}
+                                data-j={j}
+                                disabled={num === 0}
+                              >
+                                {silly.map((symbol) => (
+                                  <option value={symbol} key={symbol} disabled={symbol === 0}>
+                                    {getNoteFromNumberNoStyle(symbol, MAJOR_SCALES[song.keys[0]])}
+                                  </option>
+                                ))}
+                              </select>
+                              <button
+                                className="bg-red-500 text-white p-1 rounded-lg"
+                                type="button"
+                              >
+                                -
+                              </button>
+                            </label>
+                          </div>
+                          <button
+                            className="bg-gray-100 text-black p-1 rounded-lg"
+                            type="button"
+                            onClick={() => addNote(i)}
+                          >
+                            Agregar Nota/Simbolo
+                          </button>
+                        </div>
+                      );
+                    }
                     if (num !== 0) {
                       return (
                         <div className="text-sm pt-1" key={j}>
@@ -265,21 +317,16 @@ export default function Add() {
                 </div>
                 <div className="flex flex-col gap-2 justify-center">
                   <button
-                    className="bg-gray-100 text-black p-1 rounded-lg"
-                    type="button"
-                    onClick={() => addNote(i)}
-                  >
-                    Agregar Nota/Simbolo
-                  </button>
-                  <button
                     className="bg-gray-200 text-black p-1 rounded-lg"
                     type="button"
+                    onClick={() => addSpace(i)}
                   >
                     Agregar Espacio
                   </button>
                   <button
                     className="bg-gray-300 text-black p-1 rounded-lg mb-4"
                     type="button"
+                    onClick={() => addMeasure(i)}
                   >
                     Agregar Compas
                   </button>
